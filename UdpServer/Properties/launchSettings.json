@@ -1,11 +1,12 @@
-﻿{
+{
   "profiles": {
     "UdpServer": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
+        "DOTNET_ENVIRONMENT": "Development",
+        "UDP_PORT": "11000"
+      },
+      "dotnetRunMessages": true
     }
   }
 }

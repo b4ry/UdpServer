@@ -12,7 +12,7 @@ namespace UdpServer
         public Worker(ILogger<Worker> logger)
         {
             _logger = logger;
-            _port = 11000;
+            _port = int.Parse(Environment.GetEnvironmentVariable("UDP_PORT") ?? "11000");
             _udpServer = new UdpClient(_port);
         }
 
@@ -22,7 +22,7 @@ namespace UdpServer
 
             stoppingToken.Register(() =>
             {
-                _logger.LogInformation("Cancellation requested. Cleaning up the resources.");
+                _logger.LogInformation("Cancellation requested.\nCleaning up the resources.");
 
                 _udpServer.Close();
             });
