@@ -10,10 +10,12 @@ namespace UdpServer
         private readonly IReceivedMessageProcessor _receivedMessageProcessor;
         private readonly int _port;
 
+        private const string UdpPortEnvironmentVariableName = "UDP_PORT";
+
         public Worker(ILogger<Worker> logger, IReceivedMessageProcessor receivedMessageProcessor)
         {
             _logger = logger;
-            _port = int.Parse(Environment.GetEnvironmentVariable("UDP_PORT") ?? "11000");
+            _port = int.Parse(Environment.GetEnvironmentVariable(UdpPortEnvironmentVariableName) ?? "11000");
             _server = new UdpClient(_port);
             _receivedMessageProcessor = receivedMessageProcessor;
         }
