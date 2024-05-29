@@ -7,10 +7,6 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<Worker>();
         services.AddSingleton<IReceivedMessageProcessor, ReceivedMessageProcessor>();
     })
-    .ConfigureLogging(logging =>
-    {
-        logging.AddConsole();
-    })
     .Build();
 
 await host.RunAsync();
