@@ -45,6 +45,10 @@ namespace UdpServer
                 {
                     _logger.LogError(ex, "An exception occured in the server");
                 }
+                finally
+                {
+                    _udpServer.Close();
+                }
             }
 
             _logger.LogInformation("Server got stopped.");
