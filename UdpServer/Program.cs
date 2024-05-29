@@ -5,6 +5,10 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddHostedService<Worker>();
     })
+    .ConfigureLogging(logging =>
+    {
+        logging.AddConsole();
+    })
     .Build();
 
 await host.RunAsync();
