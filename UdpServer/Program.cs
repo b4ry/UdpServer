@@ -1,5 +1,5 @@
-using UdpServer;
-using UdpServer.MessageProcessors;
+using Server;
+using Server.MessageProcessors;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>

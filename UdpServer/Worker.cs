@@ -1,7 +1,7 @@
 using System.Net.Sockets;
-using UdpServer.MessageProcessors;
+using Server.MessageProcessors;
 
-namespace UdpServer
+namespace Server
 {
     public class Worker : BackgroundService
     {
