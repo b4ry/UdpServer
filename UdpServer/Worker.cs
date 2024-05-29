@@ -1,5 +1,5 @@
 using System.Net.Sockets;
-using System.Text;
+using UdpServer.MessageProcessors;
 
 namespace UdpServer
 {
@@ -7,13 +7,15 @@ namespace UdpServer
     {
         private readonly ILogger<Worker> _logger;
         private readonly UdpClient _udpServer;
+        private readonly IReceivedMessageProcessor _receivedMessageProcessor;
         private readonly int _port;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<Worker> logger, IReceivedMessageProcessor receivedMessageProcessor)
         {
             _logger = logger;
             _port = int.Parse(Environment.GetEnvironmentVariable("UDP_PORT") ?? "11000");
             _udpServer = new UdpClient(_port);
+            _receivedMessageProcessor = receivedMessageProcessor;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -34,11 +36,9 @@ namespace UdpServer
                     if (_udpServer.Available > 0) // only read when there is some data available
                     {
                         var receivedData = await _udpServer.ReceiveAsync(stoppingToken);
-                        string decodedReceivedData = Encoding.ASCII.GetString(receivedData.Buffer);
+                        var decodedReceivedData = _receivedMessageProcessor.DecodeReceivedMessage(receivedData);
 
-                        _logger.LogInformation($"Received {decodedReceivedData} from {receivedData.RemoteEndPoint}");
-
-                        await Task.Delay(1000, stoppingToken);
+                        await Task.Delay(1000, stoppingToken); // we need this to save a bit of CPU time. Otherwise this loop will go crazy
                     }
                 }
                 catch(Exception ex)
