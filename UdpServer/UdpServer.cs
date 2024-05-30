@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using UdpServer.Menu;
 using UdpServer.MessageProcessors;
 
 namespace UdpServer
@@ -54,7 +55,7 @@ namespace UdpServer
 
                             switch (splitData[0])
                             {
-                                case "UR":
+                                case MenuOptions.RegisterUser:
                                     var userNick = splitData[1];
 
                                     if (!_users.ContainsKey(userNick))
@@ -75,7 +76,7 @@ namespace UdpServer
                                     }
 
                                     break;
-                                case "LU":
+                                case MenuOptions.ListUsers:
                                     StringBuilder usersList = new StringBuilder();
 
                                     foreach(var user in _users)
@@ -87,7 +88,7 @@ namespace UdpServer
 
                                     await _sendMessageProcessor.SendMessage(usersList.ToString(), receivedData.RemoteEndPoint, stoppingToken);
                                     break;
-                                case "DEFAULT":
+                                default:
                                     throw new NotImplementedException();
                             }
 
