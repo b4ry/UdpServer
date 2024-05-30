@@ -63,7 +63,7 @@ public class CustomConsoleFormatter : Microsoft.Extensions.Logging.Console.Conso
         }
 
         textWriter.WriteLine(DateTime.Now.ToLocalTime().ToString(_options.TimestampFormat, CultureInfo.InvariantCulture));
-        textWriter.WriteLine($"{logEntry.LogLevel}: {logEntry.Formatter(logEntry.State, logEntry.Exception)}");
+        textWriter.WriteLine($"{logEntry.LogLevel}: {logEntry.Formatter!(logEntry.State, logEntry.Exception)}");
     }
 
     public void Dispose()
