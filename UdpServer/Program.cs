@@ -7,6 +7,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<UdpServer.UdpServer>();
         services.AddSingleton<IReceivedMessageProcessor, ReceivedMessageProcessor>();
         services.AddSingleton<ISendMessageProcessor, SendMessageProcessor>();
+        services.AddSingleton<IOptionProcessor, OptionProcessor>();
         services.AddSingleton<CustomConsoleFormatterOptions>();
     })
     .ConfigureLogging(loggingBuilder =>
