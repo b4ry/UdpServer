@@ -1,11 +1,11 @@
-using Server;
-using Server.MessageProcessors;
+using UdpServer.MessageProcessors;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
-        services.AddHostedService<Worker>();
+        services.AddHostedService<UdpServer.UdpServer>();
         services.AddSingleton<IReceivedMessageProcessor, ReceivedMessageProcessor>();
+        services.AddSingleton<ISendMessageProcessor, SendMessageProcessor>();
     })
     .Build();
 
