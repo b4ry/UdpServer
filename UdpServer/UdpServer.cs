@@ -37,7 +37,7 @@ namespace UdpServer
 
                 stoppingToken.Register(() =>
                 {
-                    _logger.LogInformation("Cancellation requested.\nCleaning up the resources.");
+                    _logger.LogWarning("Cancellation requested.\nCleaning up the resources.");
 
                     _server.Close();
                 });
