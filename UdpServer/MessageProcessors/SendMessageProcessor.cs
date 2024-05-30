@@ -14,13 +14,8 @@ namespace UdpServer.MessageProcessors
             _logger = logger;
         }
 
-        public async Task SendMessage(string message, IPEndPoint remoteEndPoint, bool logMessage, CancellationToken stoppingToken)
+        public async Task SendMessage(string message, IPEndPoint remoteEndPoint, CancellationToken stoppingToken)
         {
-            if (logMessage)
-            {
-                _logger.LogInformation(message);
-            }
-
             var sendBytes = Encoding.ASCII.GetBytes(message);
             await _server!.SendAsync(sendBytes, remoteEndPoint, stoppingToken);
         }

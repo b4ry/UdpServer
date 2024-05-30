@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using UdpServer.MessageProcessors;
 
 namespace UdpServer
@@ -38,7 +39,6 @@ namespace UdpServer
                 stoppingToken.Register(() =>
                 {
                     _logger.LogWarning("Cancellation requested.\nCleaning up the resources.");
-
                     _server.Close();
                 });
 
@@ -50,25 +50,45 @@ namespace UdpServer
                         {
                             var receivedData = await _server.ReceiveAsync(stoppingToken);
                             var decodedReceivedData = _receivedMessageProcessor.DecodeReceivedMessage(receivedData);
+                            var splitData = decodedReceivedData.Split(":");
 
-                            if (decodedReceivedData.StartsWith("UserRegistration:"))
+                            switch (splitData[0])
                             {
-                                var userNick = decodedReceivedData.Split(":")[1];
+                                case "UR":
+                                    var userNick = splitData[1];
 
-                                if (!_users.ContainsKey(userNick))
-                                {
-                                    _users.Add(userNick, receivedData.RemoteEndPoint);
+                                    if (!_users.ContainsKey(userNick))
+                                    {
+                                        _users.Add(userNick, receivedData.RemoteEndPoint);
 
-                                    string message = $"Registered {userNick} : {receivedData.RemoteEndPoint}";
+                                        string message = $"Registered {userNick} : {receivedData.RemoteEndPoint}";
+                                        _logger.LogInformation(message);
 
-                                    await _sendMessageProcessor.SendMessage(message, receivedData.RemoteEndPoint, true, stoppingToken);
-                                }
-                                else
-                                {
-                                    string message = $"RegistrationFailed: {userNick} already exists.";
+                                        await _sendMessageProcessor.SendMessage(message, receivedData.RemoteEndPoint, stoppingToken);
+                                    }
+                                    else
+                                    {
+                                        string message = $"RegistrationFailed: {userNick} already exists.";
+                                        _logger.LogWarning(message);
 
-                                    await _sendMessageProcessor.SendMessage(message, receivedData.RemoteEndPoint, true, stoppingToken);
-                                }
+                                        await _sendMessageProcessor.SendMessage(message, receivedData.RemoteEndPoint, stoppingToken);
+                                    }
+
+                                    break;
+                                case "LU":
+                                    StringBuilder usersList = new StringBuilder();
+
+                                    foreach(var user in _users)
+                                    {
+                                        usersList.Append(user.Key + ":");
+                                    }
+
+                                    usersList.Remove(usersList.Length - 1, 1);
+
+                                    await _sendMessageProcessor.SendMessage(usersList.ToString(), receivedData.RemoteEndPoint, stoppingToken);
+                                    break;
+                                case "DEFAULT":
+                                    throw new NotImplementedException();
                             }
 
                             await Task.Delay(1000, stoppingToken); // we need this to save a bit of CPU time. Otherwise, this loop will go crazy
