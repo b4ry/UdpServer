@@ -2,20 +2,20 @@
 using System.Net.Sockets;
 using System.Text;
 
-namespace UdpServer.MessageProcessors
+namespace UdpServer.Processors
 {
     public class SendMessageProcessor : ISendMessageProcessor
     {
-        private readonly ILogger<SendMessageProcessor> _logger;
         private UdpClient? _server;
 
-        public SendMessageProcessor(ILogger<SendMessageProcessor> logger)
+        public SendMessageProcessor()
         {
-            _logger = logger;
         }
 
-        public async Task SendMessage(string message, IPEndPoint remoteEndPoint, CancellationToken stoppingToken)
+        public async Task SendMessage(string message, IPEndPoint remoteEndPoint, Action<string>? log, CancellationToken stoppingToken)
         {
+            log?.Invoke(message);
+
             var sendBytes = Encoding.ASCII.GetBytes(message);
             await _server!.SendAsync(sendBytes, remoteEndPoint, stoppingToken);
         }

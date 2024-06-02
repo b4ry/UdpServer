@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace UdpServer.MessageProcessors
+namespace UdpServer.Processors
 {
     public interface IReceivedMessageProcessor
     {

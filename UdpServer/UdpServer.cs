@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using UdpServer.Menu;
-using UdpServer.MessageProcessors;
+using UdpServer.Processors;
 
 namespace UdpServer
 {
@@ -72,16 +72,20 @@ namespace UdpServer
                                         _users.Add(userNick, receivedData.RemoteEndPoint);
 
                                         message = $"Registered {userNick} : {receivedData.RemoteEndPoint}";
-                                        _logger.LogInformation(message);
-
-                                        await _sendMessageProcessor.SendMessage(message, receivedData.RemoteEndPoint, stoppingToken);
+                                        await _sendMessageProcessor.SendMessage(
+                                            message,
+                                            receivedData.RemoteEndPoint,
+                                            (string x) => { _logger.LogInformation(x); },
+                                            stoppingToken);
                                     }
                                     else
                                     {
                                         message = $"RegistrationFailed: {userNick} already exists.";
-                                        _logger.LogWarning(message);
-
-                                        await _sendMessageProcessor.SendMessage(message, receivedData.RemoteEndPoint, stoppingToken);
+                                        await _sendMessageProcessor.SendMessage(
+                                            message,
+                                            receivedData.RemoteEndPoint,
+                                            (string x) => { _logger.LogWarning(x); },
+                                            stoppingToken);
                                     }
 
                                     break;
@@ -95,15 +99,19 @@ namespace UdpServer
 
                                     usersList.Remove(usersList.Length - 1, 1);
 
-                                    await _sendMessageProcessor.SendMessage(usersList.ToString(), receivedData.RemoteEndPoint, stoppingToken);
+                                    await _sendMessageProcessor.SendMessage(usersList.ToString(), receivedData.RemoteEndPoint, null, stoppingToken);
 
                                     break;
                                 case MenuOptions.DirectMessage:
                                     var lastIndexHyphen = splitData[1].LastIndexOf("-");
                                     var recipientUser = splitData[1][(lastIndexHyphen+1)..].Trim();
-                                    message = $"({receivedData.RemoteEndPoint}) {splitData[1][..lastIndexHyphen]}";
 
-                                    await _sendMessageProcessor.SendMessage(message, _users[recipientUser], stoppingToken);
+                                    message = $"({receivedData.RemoteEndPoint}) {splitData[1][..lastIndexHyphen]}";
+                                    await _sendMessageProcessor.SendMessage(
+                                        message,
+                                        _users[recipientUser],
+                                        null,
+                                        stoppingToken);
 
                                     break;
                                 default:

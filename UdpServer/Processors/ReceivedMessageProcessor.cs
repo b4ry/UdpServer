@@ -1,7 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 
-namespace UdpServer.MessageProcessors
+namespace UdpServer.Processors
 {
     public class ReceivedMessageProcessor : IReceivedMessageProcessor
     {

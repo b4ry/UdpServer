@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace UdpServer.MessageProcessors
+namespace UdpServer.Processors
 {
     public class OptionProcessor : IOptionProcessor
     {

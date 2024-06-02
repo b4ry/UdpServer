@@ -1,4 +1,4 @@
-﻿namespace UdpServer.MessageProcessors
+﻿namespace UdpServer.Processors
 {
     public interface IOptionProcessor
     {
